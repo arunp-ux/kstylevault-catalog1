@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KStyle Vault | Korean Fits Links</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial,
+          sans-serif;
+        background: linear-gradient(180deg, #eef2f6 0%, #f7f9fb 100%);
+        min-height: 100vh;
+        color: #111;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 4px;
+      }
+      .logo-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #111;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .site-name {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .tagline {
+        color: #555;
+        font-weight: 600;
+        margin-bottom: 24px;
+        margin-top: 4px;
+      }
+
+      /* ===== CATEGORY GRID (home page) ===== */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      @media (min-width: 600px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .grid {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+        }
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition:
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+        text-decoration: none;
+        color: inherit;
+      }
+      .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+      .card .icon {
+        font-size: 28px;
+      }
+      .card .bottom-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card .name {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .card .arrow {
+        color: #999;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+      }
+      .footer h2 {
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+      .footer a {
+        display: inline-block;
+        background: #111;
+        color: #fff;
+        padding: 10px 24px;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .back-btn {
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 999px;
+        padding: 6px 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #fff;
+        margin-bottom: 16px;
+      }
+      .cat-title {
+        font-size: 24px;
+        font-weight: 800;
+      }
+      .cat-count {
+        color: #777;
+        margin-bottom: 20px;
+      }
+
+      /* ===== PRODUCT GRID (inside a category) ===== */
+      /* Always at least 2 columns, even with just 1 product —
+         grid-auto-flow keeps each card from stretching full width. */
+      #productList {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      @media (min-width: 600px) {
+        #productList {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+      }
+      @media (min-width: 1024px) {
+        #productList {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      .product-card {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        min-width: 0; /* prevents grid blowout on small screens */
+      }
+      .product-card img {
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        object-fit: cover;
+        display: block;
+        background: #f2f2f2;
+      }
+      .product-info {
+        padding: 10px 12px 14px;
+      }
+      .product-top {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 10px;
+        gap: 2px;
+      }
+      .product-name {
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+      .product-price {
+        color: #16a34a;
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .buy-btn {
+        display: block;
+        width: 100%;
+        background: #111;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 13px;
+      }
+      .empty-msg {
+        color: #999;
+        font-size: 14px;
+        grid-column: 1 / -1;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="homePage">
+        <div class="header">
+          <div class="logo-circle">KS</div>
+          <div class="site-name" id="siteNameText">Korean Fits</div>
+        </div>
+        <div class="tagline" id="taglineText">
+          Budget Korean Fits For Indian Men
+        </div>
+        <div class="grid" id="categoryGrid"></div>
+        <div class="footer">
+          <h2>Follow us</h2>
+          <a href="https://instagram.com/kstylevault_official" target="_blank"
+            >Instagram</a
+          >
+        </div>
+      </div>
+
+      <div id="categoryPage" class="hidden">
+        <div class="back-btn" onclick="showHome()">← Back</div>
+        <div class="cat-title" id="catTitle"></div>
+        <div class="cat-count" id="catCount"></div>
+        <div id="productList"></div>
+      </div>
+    </div>
+
+    <script>
+      /* ========================================================
+   EDIT ONLY THIS DATA BLOCK to add categories / products.
+
+   ⚠️ IMAGE HOSTING — now using Supabase Storage format:
+   https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/BUCKET-NAME/FILE-PATH.jpg
+
+   Steps:
+   1. supabase.com → New Project (free)
+   2. Left menu → Storage → New Bucket → name "product-images" → toggle "Public bucket" ON
+   3. Upload the ORIGINAL photo (not a WhatsApp-forwarded copy — WhatsApp compresses images)
+   4. Click uploaded file → "Get URL" → copy it
+   5. Paste into "image" field below, replacing YOUR-PROJECT-ID placeholder
+======================================================== */
+      const DATA = {
+        siteName: "KOREAN FITS MENS AND WOMENS",
+        tagline: "BUDGET KOREAN FITS FOR Indian Men AND WOMEN",
+        categories: [
+          {
+            slug: "mens-jeans",
+            name: "Men's Jeans",
+            icon: "👖",
+            products: [
+              {
+                name: "Korean Baggy Jeans",
+                price: 380,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/product3.jpg",
+                buyLink: "https://fktr.in/dDotDuu",
+              },
+              {
+                name: "Korean Straight Fit Denim",
+                price: 450,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/product4.jpg",
+                buyLink: "https://fktr.in/sample2",
+              },
+              {
+                name: "Wide Leg Wash Jeans",
+                price: 520,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/product5.jpg",
+                buyLink: "https://fktr.in/sample3",
+              },
+              {
+                name: "Cargo Style Jeans",
+                price: 610,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/product6.jpg",
+                buyLink: "https://fktr.in/sample4",
+              },
+            ],
+          },
+          {
+            slug: "mens-upper-wear",
+            name: "Men's Upper Wear",
+            icon: "🧥",
+            products: [
+              {
+                name: "Oversized Bomber Jacket",
+                price: 899,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shirt1.jpg",
+                buyLink: "https://fktr.in/sample5",
+              },
+              {
+                name: "Korean Knit Cardigan",
+                price: 650,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shirt2%20(2).jpg",
+                buyLink: "https://fktr.in/sample6",
+              },
+              {
+                name: "Plain Oversized Tee",
+                price: 299,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shirt3.jpg",
+                buyLink: "https://fktr.in/sample7",
+              },
+              {
+                name: "Minimal Hoodie",
+                price: 749,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shirt4.jpg",
+                buyLink: "https://fktr.in/sample8",
+              },
+            ],
+          },
+          {
+            slug: "mens-footwear",
+            name: "Men's Footwear",
+            icon: "👟",
+            products: [
+              {
+                name: "Chunky Sneakers",
+                price: 999,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shoe1%20(1).jpg",
+                buyLink: "https://fktr.in/sample9",
+              },
+              {
+                name: "Canvas Slip-Ons",
+                price: 599,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shoe1%20(2).jpg",
+                buyLink: "https://fktr.in/sample10",
+              },
+              {
+                name: "Korean Loafers",
+                price: 849,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shoe1%20(3).jpg",
+                buyLink: "https://fktr.in/sample11",
+              },
+              {
+                name: "Retro Running Shoes",
+                price: 1099,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/shoe1%20(4).jpg",
+                buyLink: "https://fktr.in/sample12",
+              },
+            ],
+          },
+          {
+            slug: "mens-accessories",
+            name: "Men's Accessories",
+            icon: "⌚",
+            products: [
+              {
+                name: "Minimal Chain Necklace",
+                price: 249,
+                image:
+                  "https://okrgrrtvdffzlhisizfk.supabase.co/storage/v1/object/public/product_images/mens-accessories/product1.jpg",
+                buyLink: "https://fktr.in/sample13",
+              },
+              {
+                name: "Korean Style Watch",
+                price: 799,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/mens-accessories/product2.jpg",
+                buyLink: "https://fktr.in/sample14",
+              },
+              {
+                name: "Crossbody Sling Bag",
+                price: 549,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/mens-accessories/product3.jpg",
+                buyLink: "https://fktr.in/sample15",
+              },
+              {
+                name: "Beanie Cap",
+                price: 199,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/mens-accessories/product4.jpg",
+                buyLink: "https://fktr.in/sample16",
+              },
+            ],
+          },
+          {
+            slug: "womens-jeans",
+            name: "Women's Jeans",
+            icon: "👖",
+            products: [
+              {
+                name: "High Waist Wide Jeans",
+                price: 420,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-jeans/product1.jpg",
+                buyLink: "https://fktr.in/sample17",
+              },
+              {
+                name: "Korean Mom Fit Jeans",
+                price: 480,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-jeans/product2.jpg",
+                buyLink: "https://fktr.in/sample18",
+              },
+              {
+                name: "Straight Cut Denim",
+                price: 450,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-jeans/product3.jpg",
+                buyLink: "https://fktr.in/sample19",
+              },
+              {
+                name: "Distressed Baggy Jeans",
+                price: 550,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-jeans/product4.jpg",
+                buyLink: "https://fktr.in/sample20",
+              },
+            ],
+          },
+          {
+            slug: "womens-upper-wear",
+            name: "Women's Upper Wear",
+            icon: "👚",
+            products: [
+              {
+                name: "Korean Oversized Blouse",
+                price: 399,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-upper-wear/product1.jpg",
+                buyLink: "https://fktr.in/sample21",
+              },
+              {
+                name: "Knit Crop Top",
+                price: 349,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-upper-wear/product2.jpg",
+                buyLink: "https://fktr.in/sample22",
+              },
+              {
+                name: "Cardigan Set",
+                price: 699,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-upper-wear/product3.jpg",
+                buyLink: "https://fktr.in/sample23",
+              },
+              {
+                name: "Ruffle Sleeve Top",
+                price: 449,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-upper-wear/product4.jpg",
+                buyLink: "https://fktr.in/sample24",
+              },
+            ],
+          },
+          {
+            slug: "womens-footwear",
+            name: "Women's Footwear",
+            icon: "👠",
+            products: [
+              {
+                name: "Korean Platform Heels",
+                price: 899,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-footwear/product1.jpg",
+                buyLink: "https://fktr.in/sample25",
+              },
+              {
+                name: "White Canvas Sneakers",
+                price: 599,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-footwear/product2.jpg",
+                buyLink: "https://fktr.in/sample26",
+              },
+              {
+                name: "Mary Jane Flats",
+                price: 549,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-footwear/product3.jpg",
+                buyLink: "https://fktr.in/sample27",
+              },
+              {
+                name: "Ankle Strap Sandals",
+                price: 649,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-footwear/product4.jpg",
+                buyLink: "https://fktr.in/sample28",
+              },
+            ],
+          },
+          {
+            slug: "womens-accessories",
+            name: "Women's Accessories",
+            icon: "👜",
+            products: [
+              {
+                name: "Pearl Drop Earrings",
+                price: 199,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-accessories/product1.jpg",
+                buyLink: "https://fktr.in/sample29",
+              },
+              {
+                name: "Mini Shoulder Bag",
+                price: 749,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-accessories/product2.jpg",
+                buyLink: "https://fktr.in/sample30",
+              },
+              {
+                name: "Korean Hair Clips Set",
+                price: 149,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-accessories/product3.jpg",
+                buyLink: "https://fktr.in/sample31",
+              },
+              {
+                name: "Layered Necklace",
+                price: 299,
+                image:
+                  "https://YOUR-PROJECT-ID.supabase.co/storage/v1/object/public/product-images/womens-accessories/product4.jpg",
+                buyLink: "https://fktr.in/sample32",
+              },
+            ],
+          },
+        ],
+      };
+      /* ======================================================== */
+
+      document.getElementById("siteNameText").textContent = DATA.siteName;
+      document.getElementById("taglineText").textContent = DATA.tagline;
+
+      const grid = document.getElementById("categoryGrid");
+      DATA.categories.forEach((cat) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.onclick = () => showCategory(cat.slug);
+        card.innerHTML = `
+    <span class="icon">${cat.icon}</span>
+    <div class="bottom-row">
+      <span class="name">${cat.name}</span>
+      <span class="arrow">→</span>
+    </div>
+  `;
+        grid.appendChild(card);
+      });
+
+      function showCategory(slug) {
+        const cat = DATA.categories.find((c) => c.slug === slug);
+        if (!cat) return;
+
+        document.getElementById("homePage").classList.add("hidden");
+        document.getElementById("categoryPage").classList.remove("hidden");
+        document.getElementById("catTitle").textContent = cat.name;
+        document.getElementById("catCount").textContent =
+          cat.products.length + " picks";
+
+        const list = document.getElementById("productList");
+        list.innerHTML = "";
+
+        if (cat.products.length === 0) {
+          list.innerHTML = '<p class="empty-msg">No products added yet.</p>';
+          return;
+        }
+
+        cat.products.forEach((p) => {
+          const card = document.createElement("div");
+          card.className = "product-card";
+          card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" loading="eager" decoding="async" />
+      <div class="product-info">
+        <div class="product-top">
+          <span class="product-name">${p.name}</span>
+          <span class="product-price">₹${p.price}</span>
+        </div>
+        <a class="buy-btn" href="${p.buyLink}" target="_blank" rel="noopener sponsored">Buy Now</a>
+      </div>
+    `;
+          list.appendChild(card);
+        });
+
+        window.scrollTo(0, 0);
+      }
+
+      function showHome() {
+        document.getElementById("categoryPage").classList.add("hidden");
+        document.getElementById("homePage").classList.remove("hidden");
+        window.scrollTo(0, 0);
+      }
+    </script>
+  </body>
+</html>
